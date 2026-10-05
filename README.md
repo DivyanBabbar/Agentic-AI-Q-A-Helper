@@ -1,5 +1,7 @@
 # Agentic AI Question–Answer Helper
 
+![tests](https://github.com/DivyanBabbar/Agentic-AI-Q-A-Helper/actions/workflows/tests.yml/badge.svg)
+
 ## Overview
 
 This is a **lightweight, rule-based agentic AI application** designed to demonstrate core concepts in agent architecture, including query classification, tool usage, short-term memory management, and API integration.
