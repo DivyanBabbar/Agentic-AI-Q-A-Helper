@@ -132,6 +132,7 @@ class TestQuestionAnswerAgent:
         assert agent.classify_query("Hello!") == "conversational"
         assert agent.classify_query("How are you?") == "conversational"
         assert agent.classify_query("Thanks a lot!") == "conversational"
+        assert agent.classify_query("Tell me about history.") == "conversational"
 
     def test_factual_query_uses_tool(self):
         """Test that factual queries use the search tool."""
@@ -194,6 +195,7 @@ class TestFastAPIIntegration:
         assert response.status_code == 200
         data = response.json()
         assert data["type"] == "factual"
+        assert data["session_id"] == "test_session1"
         assert "New Delhi" in data["answer"]
         assert len(data["memory_context"]) == 2
 
@@ -221,6 +223,7 @@ class TestFastAPIIntegration:
         assert response.status_code == 200
         data = response.json()
         assert data["answer"] is not None
+        assert len(data["session_id"]) == 36
 
     def test_chat_endpoint_empty_message(self):
         """Test that endpoint handles empty messages."""

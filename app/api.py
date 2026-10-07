@@ -23,7 +23,7 @@ agent = QuestionAnswerAgent(memory)
 class ChatRequest(BaseModel):
     """Request model for chat endpoint."""
 
-    message: str = Field(..., min_length=1, max_length=4000, description="The user's message or question")
+    message: str = Field(..., max_length=4000, description="The user's message or question")
 
 
 class ChatResponse(BaseModel):
