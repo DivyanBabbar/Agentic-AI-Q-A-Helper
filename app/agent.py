@@ -1,6 +1,7 @@
 """Rule-based agent for question answering with classification and tool use."""
 
 from typing import Dict, List, Tuple
+import re
 from app.tools import DictionarySearchTool
 from app.memory import ConversationMemory
 
@@ -70,17 +71,20 @@ class QuestionAnswerAgent:
         """
         normalized = message.lower().strip()
 
+        # Match whole words/phrases so "hi" does not match "history".
+        contains = lambda phrase: re.search(r"\b" + re.escape(phrase) + r"\b", normalized) is not None
+
         # Check for conversational patterns
         for keyword in self.conversational_keywords:
-            if keyword in normalized:
+            if contains(keyword):
                 # But "how are you" might ask for facts too, so check context
-                if "capital" in normalized or "what" in normalized:
+                if contains("capital") or contains("what"):
                     return "factual"
                 return "conversational"
 
         # Check for factual patterns
         for keyword in self.factual_keywords:
-            if keyword in normalized:
+            if contains(keyword):
                 return "factual"
 
         # Default: if it's a complete sentence without question marks, assume conversational
@@ -143,7 +147,7 @@ class QuestionAnswerAgent:
         normalized = message.lower().strip()
 
         if any(
-            word in normalized
+            re.search(r"\b" + re.escape(word) + r"\b", normalized)
             for word in ["hello", "hi", "hey", "greetings"]
         ):
             return "Hello! I'm an Agentic AI Question-Answer Helper. I can answer factual questions or have a brief conversation. How can I help you?"

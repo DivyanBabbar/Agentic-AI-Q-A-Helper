@@ -23,7 +23,7 @@ agent = QuestionAnswerAgent(memory)
 class ChatRequest(BaseModel):
     """Request model for chat endpoint."""
 
-    message: str = Field(..., description="The user's message or question")
+    message: str = Field(..., min_length=1, max_length=4000, description="The user's message or question")
 
 
 class ChatResponse(BaseModel):
@@ -34,6 +34,7 @@ class ChatResponse(BaseModel):
     memory_context: List[Dict[str, str]] = Field(
         ..., description="Recent message history in the session"
     )
+    session_id: str = Field(..., description="Reuse this opaque ID in X-Session-Id for the next turn")
 
 
 @app.post("/chat", response_model=ChatResponse)
@@ -61,6 +62,7 @@ def chat(
             type="error",
             answer="Please provide a non-empty message.",
             memory_context=[],
+            session_id=session_id,
         )
 
     # Process the message through the agent
@@ -70,6 +72,7 @@ def chat(
         type=result["type"],
         answer=result["answer"],
         memory_context=result["memory_context"],
+        session_id=session_id,
     )
 
 
